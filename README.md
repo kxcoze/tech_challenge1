@@ -41,7 +41,7 @@ nano .env
 | Переменная | Описание | Вид |
 | ---------- | -------- | --- |
 | `POSTGRES_USER` | Имя пользователя для базы данных в контейнере `db` | любая строка, например: `admin` |
-| `POSTGRES_PASSWORD` | Пароль для аутентификации пользователя в контейнере `db` | любая строка, например: `@dm1n8765` |
+| `POSTGRES_PASSWORD` | Пароль для аутентификации пользователя в контейнере `db` | любая строка, например: `adm1n8765` |
 | `POSTGRES_DB` | Имя базы данных в контейнере `db` | любая строка, например: `db`|
 | `MAX_ATTEMPTS` | Максимальное кол-во попыток получения хотя бы одного нового вопроса с адреса `https://jservice.io/api/random?count=1`| по умолчанию `10` |
 ### Запуск docker-compose
@@ -59,7 +59,7 @@ docker-compose up -d --build
 ```
 1. Отправка с помощью `httpie`
 ```bash
-http POST https://localhost:8000/get_questions/ questons_num=1
+http POST http://localhost:8000/get_questions/ questons_num=1
 ```
 2. Отправка с помощью `curl`
 ```bash
