@@ -1,5 +1,5 @@
-
+# Rename this file to .env (with the leading dot) and place it next to docker-compose.yml
 POSTGRES_USER=username
 POSTGRES_PASSWORD=your_password
 POSTGRES_DB=db
-
+MAX_ATTEMPTS=10
