@@ -1,5 +1,0 @@
-
-POSTGRES_USER=username
-POSTGRES_PASSWORD=your_password
-POSTGRES_DB=db
-
