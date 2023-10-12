@@ -50,7 +50,7 @@ nano .env
 docker-compose up -d --build
 ```
 
-### Проверка работоспособности сервиса
+## Проверка работоспособности сервиса
 Чтобы проверить работу сервиса необходимо отправить на адрес `https://localhost:8000/get_questions/` `POST` запрос с телом вида
 ```json
 {
@@ -59,7 +59,7 @@ docker-compose up -d --build
 ```
 1. Отправка с помощью `httpie`
 ```bash
-http POST http://localhost:8000/get_questions/ questons_num=1
+http POST http://localhost:8000/get_questions/ questions_num=1
 ```
 2. Отправка с помощью `curl`
 ```bash
