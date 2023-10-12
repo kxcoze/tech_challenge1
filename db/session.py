@@ -5,4 +5,4 @@ from src.config import config
 
 engine = create_engine(config.POSTGRES_URL)
 
-SessionLocal = sessionmaker(auto_commit=False, auto_flush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -1,7 +1,11 @@
+import json
+import logging
+import asyncio
 from datetime import datetime
 from typing import Any, List, Dict
 
 import aiohttp
+from aiohttp.client_exceptions import ClientResponseError
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.exc import IntegrityError
 
@@ -20,11 +24,12 @@ logger = CustomLogger("endpoint_logger")
 
 
 async def fetch_questions(questions_num: int) -> List:
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
         async with session.get(
             f"https://jservice.io/api/random?count={questions_num}"
         ) as response:
-            return await response.json()
+            data = await response.read()
+            return json.loads(data)
 
 
 @router.post("/get_questions/")
@@ -34,11 +39,24 @@ async def get_questions(
     db: SessionLocal = Depends(get_db),
 ) -> Dict:
     current_amount = question_request.questions_num
-    for attempt in range(config.MAX_ATTEMPTS):
-        questions: List = await fetch_questions(current_amount)
+    for attempt in range(1, config.MAX_ATTEMPTS + 1):
+        try:
+            questions: List = await fetch_questions(current_amount)
+        except ClientResponseError:
+            # If client is not accesible appently we send too much requests, let's wait
+            wait = attempt * 5  # Waiting in seconds
+            logger.log_with_request(
+                logging.WARNING,
+                f"External server is busy, let's try after {wait}s.",
+                request,
+            )
+            await asyncio.sleep(wait)
+            continue
+
         for question in questions:
             try:
-                # We receive "%Y-%m-%dT%H:%M:%S.%fZ" format of time so just remove last letter from string to convert to ISO format
+                # We receive "%Y-%m-%dT%H:%M:%S.%fZ" format of time so just
+                # remove last letter from string to convert to ISO format
                 formatted_created_at = datetime.fromisoformat(
                     question["created_at"][:-1]
                 )
@@ -82,3 +100,4 @@ async def get_questions(
     if questions:
         return questions[-1]
     return {}
+
